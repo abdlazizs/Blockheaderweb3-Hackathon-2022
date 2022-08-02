@@ -1,0 +1,98 @@
+# Decentralized Smart Ticketing Project
+A decentralized Smart Ticketing system that serves as a solution for both event hosts and customers, eliminating the middlemen in such operations with the help of smart contracst. 
+
+
+The repo contains the contract, compiled with Solidity 0.8.9, and a web app using React  
+
+## Security considerations
+
+### Function structuring
+- As a step to mitigate reentry exploitation, every function is structured in the following manner: 
+	1. Authorization and validity checks ("require()" methods)
+	2. Computations and state changes
+	3. Call(s) / transactions
+
+### Transfer / Send / Call functions
+- Due to gas cost changes in [EIP 1884](https://eips.ethereum.org/EIPS/eip-1884), use of the transfer and send functions should be avoided after the Istanbul hard fork. Instead, the call-function is used. Call returns a boolean which represents if the transaction can be performed, so a require() should check the boolean to potentially revert the entire operation if one call fails. 
+
+### Integer overflow
+- In Solidity smart contracts, int and uint values are vulnerable to overflow. This can be used to exploit functions where addition and multiplication is used to calculate prices or total number of tickets. Necessary safety measures have been implemented in those cases.
+
+## Tools 
+- Solidity 0.8.9
+- Hardhat
+- Node 
+- ethers.js 
+-react
+
+
+## Contract interface
+
+### Event host functions
+create_event()
+- Create a new event. The sender becomes the owner of the new event.
+
+A function modifier is applied to all the following functions to make sure the sender can only alter events he/she has created.
+
+withdraw_funds()
+- Withdraw all funds received for tickets to the event identified
+- Disables the customer buyback function for this event
+
+get_tickets()
+- Get the number of tickets this customer owns for the given event
+
+get_customers()
+- Get array of all customer addresses
+
+add_tickets()
+- Increase the number of available tickets by the given amount
+
+change_ticket_price()
+- Change the ticket price to the new value
+
+
+
+### Customer (public) functions
+buy_tickets()
+- Ticket sale must be open
+- The number of tickets requested must be available
+- A customer can buy an amount of tickets up to the maximum per customer allowed by owner (if the owner has set a limit)
+- The customer must transfer at least the amount equal to number of tickets requested multiplied by the ticket price
+- The customer is stored if accepted (address and number of tickets)
+- Excess amount is returned to sender
+
+return_tickets()
+- Rejects if buyback or sale is disabled
+- Rejects if deadline is passed
+- Returns the total amount the sender has previously paid to the contract
+- Deletes all tickets owned by sender and adds them to available tickets
+
+get_event_info()
+- Get all info associated with an event: title, owner, deadline, available_tickets, max_per_customer, ticket_price,  per_customer_limit
+
+get_events()
+- Get a list of all event IDs
+
+
+
+## Tests
+
+### Unit tests
+- Makes sure all the state changing functions are emitting the right events are. 
+- Ticket purchase, checking that contract state changes correctly and cost is correct.
+- Returning tickets, checking that customer no longer owns tickets, and that ether has been returned.
+- Check that customer is unable to buy tickets with insufficient funds.
+- Check that address which is not owner cannot withdraw.
+- Add tickets.
+
+### Manual tests
+- Tested by manually interacting with the web app (creation of events, editing of owned events, buying of tickets etc)
+
+
+```shell
+npx hardhat help
+npx hardhat test
+GAS_REPORT=true npx hardhat test
+npx hardhat node
+npx hardhat run scripts/deploy.js
+```
