@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;600&display=swap');
+
 .container {
   padding: 0 2rem;
+  background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #b49676);
+  /* background: linear-gradient( 40deg,white 50%, rgb(209, 164, 209) 50%); */
+  /* font-family: Poppins; */
+    font-family: 'Poppins', sans-serif;
+    border-radius: 3rem;
 }
 
 .main {
@@ -12,14 +19,12 @@
 
 
 .title a {
-  color: #0070f3;
+  color: #3f87a6;
   text-decoration: none;
 }
 
-.title a:hover,
-.title a:focus,
-.title a:active {
-  text-decoration: underline;
+.title a:hover{
+  transform: scale(0.8);
 }
 
 .title {
@@ -59,8 +64,8 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: #3f87a6;
+  border-color: #3f87a6;
 }
 
 .card h2 {
@@ -97,4 +102,13 @@
   .logo img {
     filter: invert(1);
   }
+}
+
+.addapp {
+  text-decoration: none;
+  font-size: 3rem;
+}
+
+.addapp p{
+  font-size: 4rem;
 }
